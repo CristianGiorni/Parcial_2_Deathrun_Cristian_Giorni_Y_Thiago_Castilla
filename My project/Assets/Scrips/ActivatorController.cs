@@ -7,13 +7,13 @@ public class ActivatorController : NetworkBehaviour
     public float moveSpeed = 5f;
     private Rigidbody rb;
 
-    [Header("C�mara y Mirada")]
+    [Header("Cámara y Mirada")]
     public float mouseSensitivity = 2f;
     public Transform cameraTransform;
     private float verticalLookRotation = 0f;
 
-    [Header("Interacci�n")]
-    public float interactionRange = 100f; // Qu� tan lejos llega el rayo
+    [Header("Interacción")]
+    public float interactionRange = 100f;
 
     public override void OnNetworkSpawn()
     {
@@ -29,13 +29,13 @@ public class ActivatorController : NetworkBehaviour
 
     private void Start()
     {
-        // Buscamos el Rigidbody al iniciar
         rb = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
-        if (!IsOwner) return;
+        if (!IsOwner)
+            return;
 
         Look();
         HandleInteraction();
@@ -43,9 +43,10 @@ public class ActivatorController : NetworkBehaviour
 
     private void FixedUpdate()
     {
-        if (!IsOwner) return;
+        if (!IsOwner)
+            return;
 
-        Move(); // Agregamos la ejecuci�n del movimiento
+        Move();
     }
 
     private void Look()
@@ -57,7 +58,9 @@ public class ActivatorController : NetworkBehaviour
 
         verticalLookRotation -= mouseY;
         verticalLookRotation = Mathf.Clamp(verticalLookRotation, -90f, 90f);
-        cameraTransform.localEulerAngles = new Vector3(verticalLookRotation, 0f, 0f);
+
+        cameraTransform.localEulerAngles =
+            new Vector3(verticalLookRotation, 0f, 0f);
     }
 
     private void Move()
@@ -65,29 +68,34 @@ public class ActivatorController : NetworkBehaviour
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
 
-        Vector3 moveDirection = (transform.right * x + transform.forward * z).normalized;
+        Vector3 moveDirection =
+            (transform.right * x + transform.forward * z).normalized;
 
         Vector3 targetVelocity = moveDirection * moveSpeed;
-        targetVelocity.y = rb.linearVelocity.y; // Mantenemos la gravedad
+
+        targetVelocity.y = rb.linearVelocity.y;
 
         rb.linearVelocity = targetVelocity;
     }
 
     private void HandleInteraction()
     {
-        if (Input.GetButtonDown("Fire1"))
+        if (!Input.GetButtonDown("Fire1"))
+            return;
+
+        Ray ray = new Ray(
+            cameraTransform.position,
+            cameraTransform.forward
+        );
+
+        if (Physics.Raycast(ray, out RaycastHit hit, interactionRange))
         {
-            Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
-            RaycastHit hit;
+            TrapButton button =
+                hit.collider.GetComponent<TrapButton>();
 
-            if (Physics.Raycast(ray, out hit, interactionRange))
+            if (button != null)
             {
-                TrapTrigger trap = hit.collider.GetComponent<TrapTrigger>();
-
-                if (trap != null)
-                {
-                    trap.RequestActivation();
-                }
+                button.Activate();
             }
         }
     }
