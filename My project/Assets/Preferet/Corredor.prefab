@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 6005783750688064781}
   - component: {fileID: 6716651499344456737}
   - component: {fileID: 6875973144920510696}
+  - component: {fileID: -6563015983077521792}
   m_Layer: 0
   m_Name: Corredor
   m_TagString: Player
@@ -374,3 +375,21 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &-6563015983077521792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090217622004110661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d25a03e58ebcf4347bf93b74f3b3a94a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
+  ShowTopMostFoldoutHeaderGroup: 1
+  vidaActual:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 100
