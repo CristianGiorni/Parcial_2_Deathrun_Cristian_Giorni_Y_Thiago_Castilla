@@ -273,7 +273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TrapButton
   ShowTopMostFoldoutHeaderGroup: 1
-  trap: {fileID: 2020027786}
+  trap: {fileID: 1762624309}
 --- !u!1 &52290492
 GameObject:
   m_ObjectHideFlags: 0
@@ -8272,7 +8272,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1684770087}
   - component: {fileID: 1684770086}
-  - component: {fileID: 1684770088}
   m_Layer: 0
   m_Name: TrampaPinchosVertical
   m_TagString: Untagged
@@ -8323,24 +8322,6 @@ Transform:
   - {fileID: 1715419461}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 87.847}
---- !u!114 &1684770088
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1684770084}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82026976cb74c924a941132c3dc58cd2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrampaPinchosVertical
-  ShowTopMostFoldoutHeaderGroup: 1
-  warningTime: 0.3
-  distanciaMovimiento: 5
-  velocidadMovimiento: 20
-  cooldownTime: 3
-  grupoPinchos: {fileID: 1715419460}
 --- !u!1 &1715419460
 GameObject:
   m_ObjectHideFlags: 0
@@ -8350,6 +8331,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1715419461}
+  - component: {fileID: 1715419462}
   m_Layer: 0
   m_Name: GrupoPinchos2
   m_TagString: Untagged
@@ -8381,6 +8363,24 @@ Transform:
   - {fileID: 827952387}
   m_Father: {fileID: 1684770087}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -2.113}
+--- !u!114 &1715419462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715419460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82026976cb74c924a941132c3dc58cd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrampaPinchosVertical
+  ShowTopMostFoldoutHeaderGroup: 1
+  warningTime: 0.3
+  distanciaMovimiento: 5
+  velocidadMovimiento: 20
+  cooldownTime: 3
+  grupoPinchos: {fileID: 1715419460}
 --- !u!1 &1762624302
 GameObject:
   m_ObjectHideFlags: 0
@@ -8390,6 +8390,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1762624305}
+  - component: {fileID: 1762624306}
+  - component: {fileID: 1762624307}
+  - component: {fileID: 1762624309}
   m_Layer: 0
   m_Name: GrupoPinchos
   m_TagString: Untagged
@@ -8415,6 +8418,72 @@ Transform:
   - {fileID: 1257070080}
   m_Father: {fileID: 2020027788}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -4.411}
+--- !u!54 &1762624306
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762624302}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 3
+--- !u!65 &1762624307
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762624302}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.82, y: 1, z: 4.14}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1762624309
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1762624302}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5eeaea644ec8d894ab2c75502249445d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TrampaPinchos
+  ShowTopMostFoldoutHeaderGroup: 1
+  warningTime: 0.3
+  distanciaMovimiento: 5
+  velocidadMovimiento: 20
+  cooldownTime: 3
+  grupoPinchos: {fileID: 1762624302}
 --- !u!1 &1806783842
 GameObject:
   m_ObjectHideFlags: 0
@@ -8538,8 +8607,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2020027788}
-  - component: {fileID: 2020027786}
-  - component: {fileID: 2020027787}
+  - component: {fileID: 2020027789}
   m_Layer: 0
   m_Name: TrampaPinchos
   m_TagString: Untagged
@@ -8547,51 +8615,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &2020027786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2020027785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
-  GlobalObjectIdHash: 4268779077
-  InScenePlacedSourceGlobalObjectIdHash: 0
-  m_InScenePlacedDisabledByDefault: 0
-  DeferredDespawnTick: 0
-  Ownership: 1
-  AlwaysReplicateAsRoot: 0
-  SynchronizeTransform: 1
-  m_InScenePlaced: 1
-  ActiveSceneSynchronization: 0
-  SceneMigrationSynchronization: 0
-  SpawnWithObservers: 1
-  DontDestroyWithOwner: 0
-  AutoObjectParentSync: 1
-  SyncOwnerTransformWhenParented: 1
-  AllowOwnerToParent: 0
---- !u!114 &2020027787
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2020027785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5eeaea644ec8d894ab2c75502249445d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TrampaPinchos
-  ShowTopMostFoldoutHeaderGroup: 1
-  warningTime: 0.3
-  distanciaMovimiento: 5
-  velocidadMovimiento: 20
-  cooldownTime: 3
-  grupoPinchos: {fileID: 1762624302}
 --- !u!4 &2020027788
 Transform:
   m_ObjectHideFlags: 0
@@ -8608,6 +8631,33 @@ Transform:
   - {fileID: 1762624305}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2020027789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2020027785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.Netcode.Runtime::Unity.Netcode.NetworkObject
+  GlobalObjectIdHash: 4181381308
+  InScenePlacedSourceGlobalObjectIdHash: 0
+  m_InScenePlacedDisabledByDefault: 0
+  DeferredDespawnTick: 0
+  Ownership: 1
+  AlwaysReplicateAsRoot: 0
+  SynchronizeTransform: 1
+  m_InScenePlaced: 1
+  ActiveSceneSynchronization: 0
+  SceneMigrationSynchronization: 0
+  SpawnWithObservers: 1
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
+  SyncOwnerTransformWhenParented: 1
+  AllowOwnerToParent: 0
 --- !u!1 &2035768634
 GameObject:
   m_ObjectHideFlags: 0
@@ -8887,7 +8937,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 2.36, y: 1.07, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2082220144
 MeshRenderer:

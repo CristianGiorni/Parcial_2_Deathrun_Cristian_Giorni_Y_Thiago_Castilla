@@ -134,7 +134,14 @@ public class TrampaPinchosVertical : NetworkBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Un jugador fue golpeado por los pinchos verticales. DAÑO.");
+            Debug.Log("PinchosVerticales: El jugador fue empalado.");
+
+            // Buscamos el script de vida del jugador y le hacemos daño masivo
+            PlayerHealth salud = collision.gameObject.GetComponent<PlayerHealth>();
+            if (salud != null)
+            {
+                salud.RecibirDano(1000f);
+            }
         }
     }
 }

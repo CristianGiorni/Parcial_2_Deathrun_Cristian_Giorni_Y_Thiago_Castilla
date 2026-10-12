@@ -144,7 +144,14 @@ public class CuboTrampa : NetworkBehaviour
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("El cubo golpeó a un jugador. DAÑO.");
+            Debug.Log("CuboTrampa: El jugador fue aplastado.");
+
+            // Buscamos el script de vida del jugador y le hacemos daño masivo
+            PlayerHealth salud = collision.gameObject.GetComponent<PlayerHealth>();
+            if (salud != null)
+            {
+                salud.RecibirDano(1000f);
+            }
         }
     }
 }

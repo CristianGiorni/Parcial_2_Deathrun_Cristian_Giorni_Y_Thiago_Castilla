@@ -5,14 +5,16 @@ public class ZonaDeMuerte : MonoBehaviour
 {
     private void OnTriggerEnter(Collider other)
     {
-        // Si el objeto que cae tiene la etiqueta "Player" y un NetworkObject
-        if (other.CompareTag("Player") && other.GetComponent<NetworkObject>() != null)
+        // Solo el servidor tiene autoridad para bajar la vida
+        if (!NetworkManager.Singleton.IsServer) return;
+
+        if (other.CompareTag("Player"))
         {
-            // Solo el servidor tiene autoridad para destruir jugadores
-            if (NetworkManager.Singleton.IsServer)
+            PlayerHealth salud = other.GetComponent<PlayerHealth>();
+            if (salud != null)
             {
-                other.GetComponent<NetworkObject>().Despawn();
-                Debug.Log("Un corredor cayó al vacío y fue eliminado.");
+                // Le hacemos 1000 de daño para asegurar que la vida llegue a 0 al instante
+                salud.RecibirDano(1000f);
             }
         }
     }
