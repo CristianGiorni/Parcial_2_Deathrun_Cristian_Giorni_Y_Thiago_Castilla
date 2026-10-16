@@ -4,75 +4,91 @@ using Unity.Netcode;
 public class PlayerHealth : NetworkBehaviour
 {
     public NetworkVariable<float> vidaActual = new NetworkVariable<float>(100f);
-    [Header("Límite del Mapa")]
-    public float alturaMinimaMuerte = -15f; // Si cae por debajo de la altura -15, se muere
 
-    // Agregá esta función adentro de PlayerHealth:
+    // Nuevos estados
+    public NetworkVariable<bool> estaMuerto = new NetworkVariable<bool>(false);
+    public NetworkVariable<bool> llegoAMeta = new NetworkVariable<bool>(false);
+
+    [Header("Límite del Mapa")]
+    public float alturaMinimaMuerte = -15f;
+
     private void Update()
     {
-        // Solo el servidor controla si se cayó
         if (!IsServer) return;
 
-        // Si la posición Y (altura) es menor al límite y el jugador sigue vivo
-        if (transform.position.y < alturaMinimaMuerte && vidaActual.Value > 0)
+        if (transform.position.y < alturaMinimaMuerte && vidaActual.Value > 0 && !estaMuerto.Value)
         {
-            Debug.Log("Jugador cayó al vacío, forzando respawn.");
-            RecibirDano(1000f);
+            RecibirDano(1000f); // Cayó al vacío
         }
     }
-    [Header("Reaparici�n")]
-    // Coordenadas donde va a revivir el jugador. Pod�s cambiarlas en el Inspector.
-    public Vector3 puntoDeReaparicion = new Vector3(0, 2, 0);
 
     public void RecibirDano(float cantidad)
     {
-        if (!IsServer) return; // Solo el servidor maneja la vida
+        if (!IsServer || estaMuerto.Value || llegoAMeta.Value) return;
 
         vidaActual.Value -= cantidad;
 
         if (vidaActual.Value <= 0)
         {
-            // EN VEZ DE DESPAWN: Llamamos a la funci�n para revivirlo
-            RevivirJugador();
+            estaMuerto.Value = true;
+            ActivarEspectadorRpc(); // Pasa a ser espectador
+            DeathrunManager.Instancia.RevisarEstadoPartida(); // Le avisa al cerebro que alguien murió
         }
-    }
-
-    private void RevivirJugador()
-    {
-        // 1. Le devolvemos la vida al m�ximo
-        vidaActual.Value = 100f;
-
-        // 2. Le avisamos a todos los clientes que este jugador se tiene que teletransportar
-        RespawnRpc(puntoDeReaparicion);
     }
 
     [Rpc(SendTo.Everyone)]
-    private void RespawnRpc(Vector3 nuevaPosicion)
+    public void ActivarEspectadorRpc()
     {
-        // Si tu personaje usa Rigidbody (F�sicas)
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.linearVelocity = Vector3.zero; // Frenamos cualquier ca�da libre
-            rb.angularVelocity = Vector3.zero;
-        }
+        // Apagamos el cuerpo físico para que los demás no lo vean ni choquen
+        GetComponent<Collider>().enabled = false;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers) r.enabled = false;
 
-        // Si tu personaje usa CharacterController (ATENCI�N AC�)
-        CharacterController cc = GetComponent<CharacterController>();
-        if (cc != null)
+        if (IsOwner)
         {
-            // Unity tiene un bug conocido: no pod�s teletransportar un CharacterController prendido.
-            // Hay que apagarlo, moverlo y volverlo a prender.
-            cc.enabled = false;
-            transform.position = nuevaPosicion;
-            cc.enabled = true;
-        }
-        else
-        {
-            // Si no usa CharacterController, simplemente lo movemos
-            transform.position = nuevaPosicion;
-        }
+            // 1. Apagamos tu script de controles
+            FirstPersonRunner scriptMov = GetComponent<FirstPersonRunner>();
+            if (scriptMov != null) scriptMov.enabled = false;
 
-        Debug.Log("�El jugador revivi� en el punto de control!");
+            // --- 2. ACÁ AGREGÁS LA LÍNEA DEL RIGIDBODY ---
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null) rb.isKinematic = true; // Congela la gravedad
+                                                   // ---------------------------------------------
+
+            // 3. Encendemos el vuelo fantasma
+            EspectadorFantasma fantasma = GetComponent<EspectadorFantasma>();
+            if (fantasma != null) fantasma.enabled = true;
+
+            // 4. Lo subimos si cayó al vacío
+            if (transform.position.y < 0)
+            {
+                transform.position = new Vector3(transform.position.x, 15f, transform.position.z);
+            }
+        }
+    }
+
+    [Rpc(SendTo.Everyone)]
+    public void RestaurarJugadorRpc()
+    {
+        // Devolvemos el cuerpo físico para la arena final
+        GetComponent<Collider>().enabled = true;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+        foreach (var r in renderers) r.enabled = true;
+
+        if (IsOwner)
+        {
+            // 1. Apagamos el vuelo fantasma
+            EspectadorFantasma fantasma = GetComponent<EspectadorFantasma>();
+            if (fantasma != null) fantasma.enabled = false;
+
+            // 2. Devolvemos los controles normales
+            FirstPersonRunner scriptMov = GetComponent<FirstPersonRunner>();
+            if (scriptMov != null) scriptMov.enabled = true;
+
+            // --- 3. ACÁ LE DEVOLVÉS LA GRAVEDAD AL RIGIDBODY ---
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null) rb.isKinematic = false; // Vuelve a caer normal
+                                                    // ---------------------------------------------------
+        }
     }
 }

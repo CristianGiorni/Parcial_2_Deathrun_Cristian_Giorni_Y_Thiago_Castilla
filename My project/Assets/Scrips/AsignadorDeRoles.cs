@@ -3,42 +3,45 @@ using Unity.Netcode;
 
 public class AsignadorDeRoles : NetworkBehaviour
 {
+    [Header("Prefabs de los Jugadores")]
     public GameObject prefabActivador;
     public GameObject prefabCorredor;
 
+    [Header("Puntos de Inicio (Largada)")]
+    public Transform puntoInicioActivador;
+    public Transform puntoInicioCorredores;
+
     public override void OnNetworkSpawn()
     {
+        // Este código solo lo ejecuta el Servidor
         if (IsServer)
         {
-            // 1. Spawneamos al Host
-            SpawnearPersonaje(NetworkManager.Singleton.LocalClientId);
-
-            // 2. Escuchamos a los demás
-            NetworkManager.Singleton.OnClientConnectedCallback += SpawnearPersonaje;
+            NetworkManager.Singleton.OnClientConnectedCallback += AsignarRolAlConectarse;
         }
     }
 
-    private void SpawnearPersonaje(ulong clientId)
+    private void AsignarRolAlConectarse(ulong clientId)
     {
-        // CANDADO DE SEGURIDAD: Evita que se creen clones encimados
-        if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient clienteNetwork))
+        GameObject jugadorInstanciado;
+
+        if (clientId == 0) // El Host siempre es el Activador
         {
-            if (clienteNetwork.PlayerObject != null)
-            {
-                return; // Si el jugador ya tiene un cuerpo en la escena, cancelamos la creación
-            }
+            jugadorInstanciado = Instantiate(prefabActivador, puntoInicioActivador.position, puntoInicioActivador.rotation);
+        }
+        else // Los demás clientes son Corredores
+        {
+            jugadorInstanciado = Instantiate(prefabCorredor, puntoInicioCorredores.position, puntoInicioCorredores.rotation);
         }
 
-        GameObject prefabAElegir = (clientId == 0) ? prefabActivador : prefabCorredor;
-        GameObject jugador = Instantiate(prefabAElegir);
-        jugador.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId);
+        // Le decimos a la red que este objeto le pertenece a ese jugador específico
+        jugadorInstanciado.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
     }
 
     public override void OnNetworkDespawn()
     {
         if (IsServer)
         {
-            NetworkManager.Singleton.OnClientConnectedCallback -= SpawnearPersonaje;
+            NetworkManager.Singleton.OnClientConnectedCallback -= AsignarRolAlConectarse;
         }
     }
 }

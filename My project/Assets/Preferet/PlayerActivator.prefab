@@ -153,9 +153,10 @@ GameObject:
   - component: {fileID: 1266102072305828008}
   - component: {fileID: 4561010134304301149}
   - component: {fileID: -1326848429548716339}
+  - component: {fileID: 9097905294666890323}
   m_Layer: 0
   m_Name: PlayerActivator
-  m_TagString: Untagged
+  m_TagString: Activador
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -373,3 +374,27 @@ MonoBehaviour:
   SwitchTransformSpaceWhenParented: 0
   Interpolate: 1
   SlerpPosition: 0
+--- !u!114 &9097905294666890323
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3928545121789034016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ecfb99e32ac36142978091e6fbc097b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VidaActivador
+  ShowTopMostFoldoutHeaderGroup: 1
+  vidaActual:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 100
+  estaMuerto:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  alturaMinimaMuerte: -15

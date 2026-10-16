@@ -444,6 +444,7 @@ GameObject:
   - component: {fileID: 6875973144920510696}
   - component: {fileID: -6563015983077521792}
   - component: {fileID: 6045412785206805735}
+  - component: {fileID: -4799068443806607652}
   m_Layer: 0
   m_Name: Corredor
   m_TagString: Player
@@ -704,3 +705,18 @@ MonoBehaviour:
   textoVidaUI: {fileID: 0}
   panelActivador: {fileID: 0}
   textoEstadoTrampas: {fileID: 0}
+--- !u!114 &-4799068443806607652
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090217622004110661}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11c0279e27792ea40bbf0cb752981533, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EspectadorFantasma
+  ShowTopMostFoldoutHeaderGroup: 1
+  velocidadVuelo: 15
+  sensibilidadRaton: 2
