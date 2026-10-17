@@ -635,6 +635,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FirstPersonRunner
   ShowTopMostFoldoutHeaderGroup: 1
+  camaraJugador: {fileID: 4202369918921328752}
+  audioListener: {fileID: 4614895461239149045}
   moveSpeed: 5
   jumpForce: 7
   gravityMultiplier: 2
@@ -685,8 +687,17 @@ MonoBehaviour:
       MinSecondsBetweenUpdates: 0
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 100
+  estaMuerto:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+  llegoAMeta:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
   alturaMinimaMuerte: -15
-  puntoDeReaparicion: {x: 1, y: 2, z: 1}
 --- !u!114 &6045412785206805735
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,7 +11,7 @@ public class PlayerHealth : NetworkBehaviour
 
     [Header("Límite del Mapa")]
     public float alturaMinimaMuerte = -15f;
-
+    public Transform puntoDeAparicion;
     private void Update()
     {
         if (!IsServer) return;
@@ -39,56 +39,99 @@ public class PlayerHealth : NetworkBehaviour
     [Rpc(SendTo.Everyone)]
     public void ActivarEspectadorRpc()
     {
-        // Apagamos el cuerpo físico para que los demás no lo vean ni choquen
-        GetComponent<Collider>().enabled = false;
+        // 1. Ocultar el modelo 3D del corredor muerto para los demás
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
-        foreach (var r in renderers) r.enabled = false;
+        foreach (Renderer r in renderers)
+        {
+            r.enabled = false;
+        }
 
+        // 2. Apagar la colisión
+        Collider col = GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        // 3. Apagar el script de caminar normal (Cambiá "TuScriptDeMovimiento" por el nombre real)
+        FirstPersonRunner scriptMov = GetComponent<FirstPersonRunner>();
+        if (scriptMov != null) scriptMov.enabled = false;
+
+        // 4. Frenar la caída, mantenerlo SIN gravedad (isKinematic = true) y subirlo al inicio
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true; // ¡Fundamental que quede en TRUE y nada lo pase a false!
+        }
+
+        // 5. Si somos el dueño de este fantasma, lo subimos al punto de inicio y prendemos el vuelo
         if (IsOwner)
         {
-            // 1. Apagamos tu script de controles
-            FirstPersonRunner scriptMov = GetComponent<FirstPersonRunner>();
-            if (scriptMov != null) scriptMov.enabled = false;
-
-            // --- 2. ACÁ AGREGÁS LA LÍNEA DEL RIGIDBODY ---
-            Rigidbody rb = GetComponent<Rigidbody>();
-            if (rb != null) rb.isKinematic = true; // Congela la gravedad
-                                                   // ---------------------------------------------
-
-            // 3. Encendemos el vuelo fantasma
-            EspectadorFantasma fantasma = GetComponent<EspectadorFantasma>();
-            if (fantasma != null) fantasma.enabled = true;
-
-            // 4. Lo subimos si cayó al vacío
-            if (transform.position.y < 0)
+            if (puntoDeAparicion != null)
             {
-                transform.position = new Vector3(transform.position.x, 15f, transform.position.z);
+                transform.position = puntoDeAparicion.position;
+            }
+
+            EspectadorFantasma fantasma = GetComponent<EspectadorFantasma>();
+            if (fantasma != null)
+            {
+                fantasma.enabled = true;
             }
         }
     }
 
     [Rpc(SendTo.Everyone)]
-    public void RestaurarJugadorRpc()
+    public void RestaurarJugadorRpc(Vector3 posicionArena)
     {
-        // Devolvemos el cuerpo físico para la arena final
+        // Devolvemos el cuerpo físico para que los demás lo vean
         GetComponent<Collider>().enabled = true;
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
         foreach (var r in renderers) r.enabled = true;
 
+        // 2. Solo el DUEÑO del personaje ejecuta el teletransporte
         if (IsOwner)
         {
-            // 1. Apagamos el vuelo fantasma
             EspectadorFantasma fantasma = GetComponent<EspectadorFantasma>();
             if (fantasma != null) fantasma.enabled = false;
 
-            // 2. Devolvemos los controles normales
             FirstPersonRunner scriptMov = GetComponent<FirstPersonRunner>();
             if (scriptMov != null) scriptMov.enabled = true;
 
-            // --- 3. ACÁ LE DEVOLVÉS LA GRAVEDAD AL RIGIDBODY ---
+            // --- MAGIA PARA TELETRANSPORTAR EL RIGIDBODY ---
             Rigidbody rb = GetComponent<Rigidbody>();
-            if (rb != null) rb.isKinematic = false; // Vuelve a caer normal
-                                                    // ---------------------------------------------------
+            if (rb != null)
+            {
+                rb.isKinematic = true;              // A. Pausamos las físicas
+                transform.position = posicionArena; // B. El dueño se mueve a sí mismo
+                rb.isKinematic = false;             // C. Reactivamos las físicas
+            }
+        }
+    }
+    public void RegenerarJugador()
+    {
+        // Solo el dueño mueve su propio cuerpo por la red
+        if (IsOwner)
+        {
+            Rigidbody rb = GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.isKinematic = true;                          // Pausamos las físicas
+                transform.position = puntoDeAparicion.position; // Lo movemos al inicio
+                rb.linearVelocity = Vector3.zero;                     // Frenamos la caída
+                rb.isKinematic = false;                         // Reactivamos las físicas
+            }
+        }
+    }
+
+    // 3. El sensor automático: si tocamos algo peligroso, llamamos a la función
+    private void OnTriggerEnter(Collider other)
+    {
+        // Si el cuerpo no es nuestro, no hacemos nada
+        if (!IsOwner) return;
+
+        // Si chocamos contra un objeto que tenga la etiqueta "Trampa" o "KillZone"
+        if (other.CompareTag("Trampa") || other.CompareTag("KillZone"))
+        {
+            RegenerarJugador();
         }
     }
 }

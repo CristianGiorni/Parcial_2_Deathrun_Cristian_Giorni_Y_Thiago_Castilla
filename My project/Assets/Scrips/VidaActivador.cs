@@ -1,5 +1,6 @@
 using UnityEngine;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class VidaActivador : NetworkBehaviour
 {
@@ -62,5 +63,34 @@ public class VidaActivador : NetworkBehaviour
         {
             Debug.LogWarning("Falta crear un objeto con el Tag 'RespawnActivador'");
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        // Solo el Servidor tiene autoridad para reiniciar la partida
+        if (!IsServer) return;
+
+        // Si el Activador cae al vacío y toca la KillZone
+        if (other.CompareTag("KillZone") || other.CompareTag("Trampa"))
+        {
+            ReiniciarNivelPorDerrotaActivador();
+        }
+    }
+
+    public void ReiniciarNivelPorDerrotaActivador()
+    {
+        if (!IsServer) return;
+
+        // 1. Limpiamos los cuerpos actuales de la red
+        foreach (NetworkClient cliente in NetworkManager.Singleton.ConnectedClientsList)
+        {
+            if (cliente.PlayerObject != null && cliente.PlayerObject.IsSpawned)
+            {
+                cliente.PlayerObject.Despawn(true);
+            }
+        }
+
+        // 2. Recargamos la escena para todos (Ganan los corredores)
+        string nombreEscenaActual = SceneManager.GetActiveScene().name;
+        NetworkManager.Singleton.SceneManager.LoadScene(nombreEscenaActual, LoadSceneMode.Single);
     }
 }

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Activador
   - RespawnActivador
+  - Trampa
+  - KillZone
   layers:
   - Default
   - TransparentFX

@@ -3,6 +3,8 @@ using Unity.Netcode;
 
 public class FirstPersonRunner : NetworkBehaviour
 {
+    public Camera camaraJugador; // Arrastrá la cámara del jugador acá en el Inspector
+    public AudioListener audioListener; // Arrastrá la cámara acá también (tiene el listener)
     [Header("Movimiento (M�tricas del GDD)")]
     public float moveSpeed = 5f;
     public float jumpForce = 7f;
@@ -18,17 +20,17 @@ public class FirstPersonRunner : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
-        // Si este personaje NO es el nuestro, le apagamos la c�mara y el AudioListener
-        // para no ver a trav�s de los ojos de los dem�s.
         if (!IsOwner)
         {
-            cameraTransform.gameObject.SetActive(false);
-            return;
+            // Apagamos SOLO el lente de la cámara y el micrófono, nunca el GameObject
+            if (camaraJugador != null) camaraJugador.enabled = false;
+            if (audioListener != null) audioListener.enabled = false;
         }
-
-        // Si somos nosotros, bloqueamos el mouse en el centro de la pantalla
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        else
+        {
+            if (camaraJugador != null) camaraJugador.enabled = true;
+            if (audioListener != null) audioListener.enabled = true;
+        }
     }
 
     private void Start()
