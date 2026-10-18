@@ -177,6 +177,37 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!1 &6169194315316689097
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4530767813010635880}
+  m_Layer: 0
+  m_Name: WeaponHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4530767813010635880
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6169194315316689097}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2868776898746842850}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6787551588101771141
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,7 +351,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 4530767813010635880}
   m_Father: {fileID: 3769953785023795047}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &4202369918921328752
@@ -445,6 +477,8 @@ GameObject:
   - component: {fileID: -6563015983077521792}
   - component: {fileID: 6045412785206805735}
   - component: {fileID: -4799068443806607652}
+  - component: {fileID: 5884531222094525346}
+  - component: {fileID: -4992558277586527816}
   m_Layer: 0
   m_Name: Corredor
   m_TagString: Player
@@ -698,6 +732,7 @@ MonoBehaviour:
       MaxSecondsBetweenUpdates: 0
     m_InternalValue: 0
   alturaMinimaMuerte: -15
+  puntoDeAparicion: {fileID: 0}
 --- !u!114 &6045412785206805735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -731,3 +766,42 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   velocidadVuelo: 15
   sensibilidadRaton: 2
+--- !u!114 &5884531222094525346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090217622004110661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb2c1956328cf714d9ffc738bd7970b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerWeapon
+  ShowTopMostFoldoutHeaderGroup: 1
+  cameraTransform: {fileID: 2868776898746842850}
+  weaponHolder: {fileID: 4530767813010635880}
+  weaponVisualPrefab: {fileID: 2955527377968624119, guid: 66a93386aaceaef469534c5524d7632e, type: 3}
+  HasWeapon:
+    UpdateTraits:
+      MinSecondsBetweenUpdates: 0
+      MaxSecondsBetweenUpdates: 0
+    m_InternalValue: 0
+--- !u!114 &-4992558277586527816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9090217622004110661}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6745d9724bc165d47b77384c1c17f693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerShooter
+  ShowTopMostFoldoutHeaderGroup: 1
+  cameraTransform: {fileID: 2868776898746842850}
+  playerWeapon: {fileID: 5884531222094525346}
+  fireRate: 0.15
+  range: 150
+  damage: 25
