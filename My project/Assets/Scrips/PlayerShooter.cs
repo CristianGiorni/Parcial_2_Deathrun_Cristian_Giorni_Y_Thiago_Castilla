@@ -170,24 +170,30 @@ public class PlayerShooter : NetworkBehaviour
 
             endPoint = hit.point;
 
-            PlayerHealth targetHealth =
-                hit.collider.GetComponentInParent<PlayerHealth>();
+            // Buscamos ambos posibles scripts en el objeto impactado
+            PlayerHealth targetHealth = hit.collider.GetComponentInParent<PlayerHealth>();
+            VidaActivador targetActivador = hit.collider.GetComponentInParent<VidaActivador>();
 
+            // 1. Si impactamos a un corredor (y no somos nosotros mismos)
             if (targetHealth != null && targetHealth != shooterHealth)
             {
-                Debug.Log(
-                    $"Impacto en {targetHealth.name}. " +
-                    $"Vida: {targetHealth.vidaActual.Value}. " +
-                    $"llegoAMeta: {targetHealth.llegoAMeta.Value}. " +
-                    $"Muerto: {targetHealth.estaMuerto.Value}"
-                );
+                Debug.Log($"Impacto en Corredor: {targetHealth.name}. Vida: {targetHealth.vidaActual.Value}");
 
                 if (!targetHealth.estaMuerto.Value)
                     targetHealth.RecibirDanoPvP(damage);
             }
+            // 2. Si impactamos al Activador
+            else if (targetActivador != null)
+            {
+                Debug.Log($"Impacto en Activador: {targetActivador.name}. Vida: {targetActivador.vidaActual.Value}");
+
+                if (!targetActivador.estaMuerto.Value)
+                    targetActivador.RecibirDanoPvP(damage);
+            }
+            // 3. Si impactamos en una pared u otro objeto estático
             else
             {
-                Debug.Log($"El disparo impactó en: {hit.collider.name}");
+                Debug.Log($"El disparo impactó en estructura: {hit.collider.name}");
             }
 
             break;

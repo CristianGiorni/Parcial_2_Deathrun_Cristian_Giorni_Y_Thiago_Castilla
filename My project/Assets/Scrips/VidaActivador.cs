@@ -14,17 +14,14 @@ public class VidaActivador : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // Si se cae del mapa...
         if (transform.position.y < alturaMinimaMuerte && !estaMuerto.Value)
         {
             if (!DeathrunManager.Instancia.batallaFinalIniciada)
             {
-                // Fase 1: Carrera de trampas -> Lo salvamos
                 RespawnearSeguro();
             }
             else
             {
-                // Fase 2: Batalla Final -> Se cae de la arena y muere
                 RecibirDano(1000f);
             }
         }
@@ -34,15 +31,32 @@ public class VidaActivador : NetworkBehaviour
     {
         if (!IsServer || estaMuerto.Value) return;
 
-        // El Activador es INMORTAL hasta que empiece la batalla final
+        // Inmortal hasta que empiece la batalla final
         if (!DeathrunManager.Instancia.batallaFinalIniciada) return;
 
         vidaActual.Value -= cantidad;
 
         if (vidaActual.Value <= 0)
         {
+            vidaActual.Value = 0;
             estaMuerto.Value = true;
-            // Le avisamos al cerebro que el jefe final cayó
+            DeathrunManager.Instancia.RevisarEstadoPartida();
+        }
+    }
+
+    public void RecibirDanoPvP(float cantidad)
+    {
+        if (!IsServer || estaMuerto.Value) return;
+
+        // El Activador solo recibe daño PvP si ya arrancó la batalla final
+        if (!DeathrunManager.Instancia.batallaFinalIniciada) return;
+
+        vidaActual.Value -= cantidad;
+
+        if (vidaActual.Value <= 0)
+        {
+            vidaActual.Value = 0;
+            estaMuerto.Value = true;
             DeathrunManager.Instancia.RevisarEstadoPartida();
         }
     }
@@ -64,12 +78,11 @@ public class VidaActivador : NetworkBehaviour
             Debug.LogWarning("Falta crear un objeto con el Tag 'RespawnActivador'");
         }
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        // Solo el Servidor tiene autoridad para reiniciar la partida
         if (!IsServer) return;
 
-        // Si el Activador cae al vacío y toca la KillZone
         if (other.CompareTag("KillZone") || other.CompareTag("Trampa"))
         {
             ReiniciarNivelPorDerrotaActivador();
@@ -80,16 +93,8 @@ public class VidaActivador : NetworkBehaviour
     {
         if (!IsServer) return;
 
-        // 1. Limpiamos los cuerpos actuales de la red
-        foreach (NetworkClient cliente in NetworkManager.Singleton.ConnectedClientsList)
-        {
-            if (cliente.PlayerObject != null && cliente.PlayerObject.IsSpawned)
-            {
-                cliente.PlayerObject.Despawn(true);
-            }
-        }
+        // El bucle de Despawn(true) fue eliminado de acá para evitar romper la red.
 
-        // 2. Recargamos la escena para todos (Ganan los corredores)
         string nombreEscenaActual = SceneManager.GetActiveScene().name;
         NetworkManager.Singleton.SceneManager.LoadScene(nombreEscenaActual, LoadSceneMode.Single);
     }
