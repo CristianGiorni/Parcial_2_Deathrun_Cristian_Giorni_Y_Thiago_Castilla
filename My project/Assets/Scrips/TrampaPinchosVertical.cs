@@ -1,3 +1,4 @@
+
 using System.Collections;
 using UnityEngine;
 using Unity.Netcode;
@@ -20,7 +21,7 @@ public class TrampaPinchosVertical : NetworkBehaviour
     {
         if (grupoPinchos == null)
         {
-            Debug.LogError("TrampaPinchosVertical: No hay un GrupoPinchos asignado.");
+            Debug.LogError("No hay GrupoPinchos asignado.");
             return;
         }
 
@@ -29,24 +30,23 @@ public class TrampaPinchosVertical : NetworkBehaviour
 
     public void RequestActivation()
     {
-        if (!isReady)
-            return;
+        if (!IsSpawned) return;
 
         if (IsServer)
-        {
-            StartCoroutine(TrapSequence());
-        }
+            StartCoroutineIfReady();
         else
-        {
             ActivateTrapServerRpc();
-        }
     }
 
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateTrapServerRpc()
     {
-        if (!isReady)
-            return;
+        StartCoroutineIfReady();
+    }
+
+    private void StartCoroutineIfReady()
+    {
+        if (!isReady) return;
 
         StartCoroutine(TrapSequence());
     }
@@ -59,7 +59,13 @@ public class TrampaPinchosVertical : NetworkBehaviour
 
         yield return new WaitForSeconds(warningTime);
 
-        yield return StartCoroutine(MovePinchos());
+        Vector3 destino = posicionInicial + Vector3.up * distanciaMovimiento;
+
+        yield return MovePinchos(destino);
+
+        yield return new WaitForSeconds(0.15f);
+
+        yield return MovePinchos(posicionInicial);
 
         grupoPinchos.transform.position = posicionInicial;
 
@@ -70,11 +76,10 @@ public class TrampaPinchosVertical : NetworkBehaviour
         isReady = true;
     }
 
-    private IEnumerator MovePinchos()
+    private IEnumerator MovePinchos(Vector3 destino)
     {
-        Vector3 destino = posicionInicial + Vector3.up * distanciaMovimiento;
-
-        while (Vector3.Distance(grupoPinchos.transform.position, destino) > 0.01f)
+        while (Vector3.Distance(
+            grupoPinchos.transform.position, destino) > 0.01f)
         {
             grupoPinchos.transform.position = Vector3.MoveTowards(
                 grupoPinchos.transform.position,
@@ -85,63 +90,37 @@ public class TrampaPinchosVertical : NetworkBehaviour
             yield return null;
         }
 
-        yield return new WaitForSeconds(0.15f);
-
-        while (Vector3.Distance(grupoPinchos.transform.position, posicionInicial) > 0.01f)
-        {
-            grupoPinchos.transform.position = Vector3.MoveTowards(
-                grupoPinchos.transform.position,
-                posicionInicial,
-                velocidadMovimiento * Time.deltaTime
-            );
-
-            yield return null;
-        }
+        grupoPinchos.transform.position = destino;
     }
 
     [ClientRpc]
     private void WarningClientRpc()
     {
-        if (grupoPinchos == null)
-            return;
+        if (grupoPinchos == null) return;
 
-        Renderer[] renderers = grupoPinchos.GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer renderer in renderers)
-        {
-            renderer.material.color = Color.red;
-        }
+        foreach (Renderer r in grupoPinchos.GetComponentsInChildren<Renderer>())
+            r.material.color = Color.red;
     }
 
     [ClientRpc]
     private void ResetVisualClientRpc()
     {
-        if (grupoPinchos == null)
-            return;
+        if (grupoPinchos == null) return;
 
-        Renderer[] renderers = grupoPinchos.GetComponentsInChildren<Renderer>();
-
-        foreach (Renderer renderer in renderers)
-        {
-            renderer.material.color = Color.white;
-        }
+        foreach (Renderer r in grupoPinchos.GetComponentsInChildren<Renderer>())
+            r.material.color = Color.white;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (!IsServer)
-            return;
+        if (!IsServer) return;
 
         if (collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("PinchosVerticales: El jugador fue empalado.");
-
-            // Buscamos el script de vida del jugador y le hacemos daño masivo
             PlayerHealth salud = collision.gameObject.GetComponent<PlayerHealth>();
+
             if (salud != null)
-            {
                 salud.RecibirDano(1000f);
-            }
         }
     }
 }
