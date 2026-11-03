@@ -42,7 +42,7 @@ public class TrapTrigger : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateTrapServerRpc()
     {
         if (isReady)

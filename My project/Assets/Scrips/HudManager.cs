@@ -32,8 +32,8 @@ public class HudManager : NetworkBehaviour
         if (IsServer)
         {
             // Sos el Host / Activador: Apagamos la vida, encendemos el panel de control
-            panelCorredor.SetActive(false);
-            panelActivador.SetActive(true);
+            if (panelCorredor != null) panelCorredor.SetActive(false);
+            if (panelActivador != null) panelActivador.SetActive(true);
 
             if (textoEstadoTrampas != null)
                 textoEstadoTrampas.text = "SISTEMA ONLINE\nEsperando objetivo...";
@@ -41,8 +41,8 @@ public class HudManager : NetworkBehaviour
         else
         {
             // Sos el Cliente / Corredor: Encendemos la vida, apagamos el panel de control
-            panelCorredor.SetActive(true);
-            panelActivador.SetActive(false);
+            if (panelCorredor != null) panelCorredor.SetActive(true);
+            if (panelActivador != null) panelActivador.SetActive(false);
         }
     }
 

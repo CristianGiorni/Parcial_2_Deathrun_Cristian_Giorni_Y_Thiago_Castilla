@@ -805,3 +805,7 @@ MonoBehaviour:
   fireRate: 0.15
   range: 150
   damage: 25
+  crosshairColor: {r: 1, g: 1, b: 1, a: 1}
+  bulletColor: {r: 1, g: 0.75, b: 0.15, a: 1}
+  tracerDuration: 0.08
+  tracerWidth: 0.025

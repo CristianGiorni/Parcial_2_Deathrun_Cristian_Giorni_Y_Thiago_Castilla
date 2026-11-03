@@ -39,8 +39,11 @@ public class CuboTrampa : NetworkBehaviour
 
         rb.isKinematic = true;
         rb.useGravity = false;
-        rb.linearVelocity = Vector3.zero;
-        rb.angularVelocity = Vector3.zero;
+        if (!rb.isKinematic)
+        {
+            rb.linearVelocity = Vector3.zero; // o tuRigidbody.velocity dependiendo de tu versión
+            rb.angularVelocity = Vector3.zero;
+        }
     }
 
     public void RequestActivation()
@@ -58,7 +61,7 @@ public class CuboTrampa : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateTrapServerRpc()
     {
         if (!isReady)

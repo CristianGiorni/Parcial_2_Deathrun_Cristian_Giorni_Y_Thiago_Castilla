@@ -33,7 +33,7 @@ public class SueloFalso : NetworkBehaviour
         else ActivateTrapServerRpc();
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateTrapServerRpc()
     {
         if (isReady) StartCoroutine(TrapSequence());

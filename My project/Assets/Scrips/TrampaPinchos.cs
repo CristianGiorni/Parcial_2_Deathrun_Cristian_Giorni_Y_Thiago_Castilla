@@ -60,7 +60,7 @@ public class TrampaPinchos : NetworkBehaviour
         StartCoroutine(TrapSequence());
     }
 
-    [ServerRpc(RequireOwnership = false)]
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivateTrapServerRpc()
     {
         StartCoroutineIfReady();
