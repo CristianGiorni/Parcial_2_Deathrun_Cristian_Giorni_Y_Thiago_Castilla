@@ -169,7 +169,7 @@ public class PlayerShooter : NetworkBehaviour
 
             endPoint = hit.point;
 
-            // Todos los jugadores (corredores y activador) usan PlayerHealth
+            
             PlayerHealth targetHealth = hit.collider.GetComponentInParent<PlayerHealth>();
 
             if (targetHealth != null && targetHealth != shooterHealth)
@@ -181,7 +181,7 @@ public class PlayerShooter : NetworkBehaviour
             }
             else
             {
-                // Pared u otro objeto estático
+                
                 Debug.Log($"El disparo impactó en estructura: {hit.collider.name}");
             }
 

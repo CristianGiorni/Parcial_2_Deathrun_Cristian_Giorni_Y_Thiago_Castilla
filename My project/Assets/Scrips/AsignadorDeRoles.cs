@@ -9,7 +9,7 @@ public class AsignadorDeRoles : NetworkBehaviour
     [Tooltip("Arrastrá acá el Prefab que tiene el FirstPersonRunner, HudManager, y PlayerHealth. NO uses Prefabs separados.")]
     public GameObject prefabJugadorUniversal;
 
-    // El lugar físico donde esperan mientras están en el Lobby
+  
     public Transform puntoEsperaLobby;
 
     private void Awake()
@@ -74,7 +74,7 @@ public class AsignadorDeRoles : NetworkBehaviour
             return;
         }
 
-        // Spawnemamos a TODOS los jugadores como cáscaras neutrales en la zona de espera
+      
         GameObject nuevoPersonaje = Instantiate(prefabJugadorUniversal, puntoEsperaLobby.position, puntoEsperaLobby.rotation);
         nuevoPersonaje.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
     }

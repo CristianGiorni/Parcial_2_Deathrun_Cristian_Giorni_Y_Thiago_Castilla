@@ -41,7 +41,7 @@ public class CuboTrampa : NetworkBehaviour
         rb.useGravity = false;
         if (!rb.isKinematic)
         {
-            rb.linearVelocity = Vector3.zero; // o tuRigidbody.velocity dependiendo de tu versión
+            rb.linearVelocity = Vector3.zero; 
             rb.angularVelocity = Vector3.zero;
         }
     }
@@ -149,7 +149,7 @@ public class CuboTrampa : NetworkBehaviour
         {
             Debug.Log("CuboTrampa: El jugador fue aplastado.");
 
-            // Buscamos el script de vida del jugador y le hacemos daño masivo
+            
             PlayerHealth salud = collision.gameObject.GetComponent<PlayerHealth>();
             if (salud != null)
             {

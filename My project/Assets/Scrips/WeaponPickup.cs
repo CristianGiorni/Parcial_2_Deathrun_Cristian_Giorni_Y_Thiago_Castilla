@@ -9,7 +9,7 @@ public class WeaponPickup : NetworkBehaviour
     {
         Debug.Log($"[WeaponPickup] RequestPickup llamado. IsSpawned: {this.IsSpawned}, collected: {this.collected}");
 
-        // Separamos las condiciones para evitar caracteres invisibles corruptos
+       
         if (this.IsSpawned == false)
             return;
 
@@ -38,7 +38,6 @@ public class WeaponPickup : NetworkBehaviour
             return;
         }
 
-        // Tolerancia de 15 unidades por latencia tras teletransporte
         float distancia = Vector3.Distance(this.transform.position, playerObject.transform.position);
         if (distancia > 15f)
         {

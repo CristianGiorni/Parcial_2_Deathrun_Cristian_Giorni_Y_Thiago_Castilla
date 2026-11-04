@@ -46,7 +46,7 @@ public class FirstPersonRunner : NetworkBehaviour
         if (!IsOwner) return;
 
         Look();
-        CheckGround(); // Acá la llama
+        CheckGround(); 
 
         bool soyActivador = false;
         if (DeathrunManager.Instancia != null)
@@ -126,7 +126,7 @@ public class FirstPersonRunner : NetworkBehaviour
         }
     }
 
-    // ACA ESTÁ LA FUNCIÓN QUE FALTABA
+ 
     private void CheckGround()
     {
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);

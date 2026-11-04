@@ -110,7 +110,7 @@ public class TrampaPinchos : NetworkBehaviour
             r.material.color = Color.white;
     }
 
-    // --- NUEVA LÓGICA DE EMPUJE ---
+  
     private void OnCollisionEnter(Collision collision)
     {
         if (!IsServer) return;
@@ -122,7 +122,7 @@ public class TrampaPinchos : NetworkBehaviour
 
             if (playerNetObj != null)
             {
-                // Le damos la orden al cliente de que salga volando
+               
                 EmpujarJugadorRpc(playerNetObj.NetworkObjectId);
             }
         }
@@ -133,23 +133,22 @@ public class TrampaPinchos : NetworkBehaviour
     {
         if (NetworkManager.Singleton.SpawnManager.SpawnedObjects.TryGetValue(playerObjectId, out NetworkObject playerObj))
         {
-            // Si tu personaje usa Rigidbody
+           
             Rigidbody playerRb = playerObj.GetComponent<Rigidbody>();
             if (playerRb != null)
             {
-                playerRb.linearVelocity = Vector3.zero; // Frenamos su movimiento actual
+                playerRb.linearVelocity = Vector3.zero; 
 
-                // AHORA SOLO EMPUJA HACIA LA DERECHA. 
-                // Subí un poco la fuerza a 30f para compensar que ya no hay vuelo parabólico
+                
                 Vector3 direccionVuelo = Vector3.right;
                 playerRb.AddForce(direccionVuelo * 30f, ForceMode.Impulse);
             }
 
-            // Si tu personaje usa CharacterController
+           
             CharacterController cc = playerObj.GetComponent<CharacterController>();
             if (cc != null)
             {
-                // Solo lo arrastra de forma horizontal
+            
                 cc.Move(Vector3.right * 6f);
             }
         }

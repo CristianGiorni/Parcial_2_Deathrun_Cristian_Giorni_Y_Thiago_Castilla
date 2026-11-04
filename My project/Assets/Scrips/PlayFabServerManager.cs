@@ -1,13 +1,13 @@
 using UnityEngine;
 using Unity.Netcode;
 using System;
-using PlayFab; // Esto ahora va a funcionar perfecto
+using PlayFab; 
 
 public class PlayFabServerManager : MonoBehaviour
 {
     private void Start()
     {
-        // Application.isBatchMode detecta si el juego se compiló como "Dedicated Server" (sin gráficos).
+       
         if (Application.isBatchMode)
         {
             Debug.Log("Iniciando en modo Servidor Dedicado. Conectando con PlayFab...");
@@ -21,19 +21,19 @@ public class PlayFabServerManager : MonoBehaviour
 
     private void IniciarServidorPlayFab()
     {
-        // Iniciamos el agente de PlayFab
+       
         PlayFabMultiplayerAgentAPI.Start();
         PlayFabMultiplayerAgentAPI.IsDebugging = true;
 
-        // Suscribimos los eventos obligatorios
+       
         PlayFabMultiplayerAgentAPI.OnServerActiveCallback += OnServerActive;
         PlayFabMultiplayerAgentAPI.OnShutDownCallback += OnShutDown;
         PlayFabMultiplayerAgentAPI.OnMaintenanceCallback += OnMaintenance;
 
-        // Le avisamos a la nube que ya cargamos el mapa y estamos listos
+        
         PlayFabMultiplayerAgentAPI.ReadyForPlayers();
 
-        // Encendemos el servidor de Netcode for GameObjects
+      
         NetworkManager.Singleton.StartServer();
     }
 

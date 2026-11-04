@@ -92,15 +92,14 @@ public class DeathrunManager : NetworkBehaviour
         return NetworkManager.Singleton.LocalClientId == idDelActivadorActual.Value;
     }
 
-    // --- REVISIÓN DE META Y BATALLA FINAL ---
+  
 
     public void RevisarEstadoPartida()
     {
-        // Antes de que se sorteen los roles no hay nada que revisar
+        
         if (!IsServer || partidaTerminada || !partidaIniciada.Value) return;
 
-        // Todos los jugadores (corredores y activador) usan PlayerHealth.
-        // Los separamos por el ID del activador.
+        
         PlayerHealth[] jugadores = FindObjectsByType<PlayerHealth>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 
         int corredoresVivos = 0;
@@ -121,7 +120,7 @@ public class DeathrunManager : NetworkBehaviour
             if (!p.estaMuerto.Value)
             {
                 corredoresVivos++;
-                // Contamos quién llegó a la meta y quién sigue corriendo
+                
                 if (p.llegoAMeta.Value) corredoresEnMeta++;
                 else corredoresEnPista++;
             }
@@ -129,14 +128,14 @@ public class DeathrunManager : NetworkBehaviour
 
         Debug.Log($"[Deathrun] Revisión -> enPista: {corredoresEnPista}, enMeta: {corredoresEnMeta}, corredoresVivos: {corredoresVivos}, activadorVivo: {activadorVivo}, batallaFinal: {batallaFinalIniciada}");
 
-        // Si el activador murió (por disparos o por caerse del mapa) ganan los corredores
+   
         if (activadorEncontrado && !activadorVivo)
         {
             TerminarPartida("¡EL ACTIVADOR HA CAÍDO! GANAN LOS CORREDORES.");
             return;
         }
 
-        // 1. Si ya estamos en la arena de Batalla Final
+       
         if (batallaFinalIniciada)
         {
             if (corredoresVivos == 0)
@@ -146,34 +145,33 @@ public class DeathrunManager : NetworkBehaviour
             return;
         }
 
-        // 2. Si todavía estamos en la pista de trampas
+     
         if (corredoresEnPista == 0)
         {
             if (corredoresEnMeta > 0)
             {
-                // No quedan corredores en pista y al menos uno llegó a la meta
+                
                 batallaFinalIniciada = true;
                 IniciarBatallaFinal(jugadores);
             }
             else
             {
-                // No quedan corredores en pista y nadie llegó a la meta
+             
                 TerminarPartida("¡TODOS LOS CORREDORES MURIERON EN LAS TRAMPAS! GANA EL ACTIVADOR.");
             }
         }
     }
 
-    // El SERVIDOR decide a quién teletransportar y le manda la orden solo a esos clientes.
-    // Así no dependemos de que llegoAMeta ya se haya replicado en cada cliente.
+    
     private void IniciarBatallaFinal(PlayerHealth[] jugadores)
     {
-        // Activador
+      
         if (puntoAparicionActivador != null)
             TeletransportarArenaClientRpc(puntoAparicionActivador.position, SoloPara(idDelActivadorActual.Value));
         else
             Debug.LogError("DeathrunManager: falta asignar puntoAparicionActivador.");
 
-        // Corredores que llegaron a la meta y siguen vivos
+        
         foreach (PlayerHealth c in jugadores)
         {
             if (c.OwnerClientId == idDelActivadorActual.Value) continue;
@@ -184,7 +182,7 @@ public class DeathrunManager : NetworkBehaviour
             else
                 Debug.LogError("DeathrunManager: falta asignar puntoAparicionSupervivientes.");
 
-            // Devuelve los gráficos y quita el modo fantasma
+            
             c.RestaurarJugadorRpc();
         }
     }
@@ -220,7 +218,7 @@ public class DeathrunManager : NetworkBehaviour
             rb.isKinematic = true;
         }
 
-        // + Vector3.up * 1.5f para que caigan suavemente y no atraviesen el piso
+       
         jugador.transform.position = destino + (Vector3.up * 1.5f);
 
         yield return null;

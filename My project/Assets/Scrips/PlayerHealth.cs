@@ -50,7 +50,7 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    // Permiso Everyone para que el Cliente pueda volverse fantasma
+    
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivarEspectadorRpc()
     {
@@ -87,7 +87,7 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    // Permiso Everyone para que el Cliente pueda restaurar su cuerpo y agarrar armas
+    
     [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void RestaurarJugadorRpc()
     {

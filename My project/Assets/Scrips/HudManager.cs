@@ -50,7 +50,7 @@ public class HudManager : NetworkBehaviour
 
     private void MostrarLobby()
     {
-        // En el lobby el cursor tiene que estar libre para poder tocar el botón "Listo"
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -84,7 +84,7 @@ public class HudManager : NetworkBehaviour
 
         soyActivador = (NetworkManager.Singleton.LocalClientId == idActivadorSorteado);
 
-        // Salimos del lobby: bloqueamos y ocultamos el cursor para jugar
+       
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -94,24 +94,23 @@ public class HudManager : NetworkBehaviour
         if (panelActivador != null) panelActivador.SetActive(soyActivador);
         if (soyActivador && textoEstadoTrampas != null) textoEstadoTrampas.text = "SISTEMA ONLINE\nEsperando objetivo...";
 
-        // 2. Elegimos el destino
-        // (PlayerHealth queda encendido para todos: el activador también usa PlayerHealth)
+        
         Vector3 destinoFinal = soyActivador
             ? DeathrunManager.Instancia.puntoInicioActivador.position
             : DeathrunManager.Instancia.puntoInicioCorredores.position;
 
-        // 3. Iniciamos el viaje seguro
+   
         StartCoroutine(RutinaTeletransporteSeguro(destinoFinal));
     }
 
-    // --- EL TRUCO PARA VENCER EL RUBBERBANDING ---
+
     private IEnumerator RutinaTeletransporteSeguro(Vector3 destino)
     {
         CharacterController cc = GetComponent<CharacterController>();
         Rigidbody rb = GetComponent<Rigidbody>();
         ClientNetworkTransform cnt = GetComponent<ClientNetworkTransform>();
 
-        // 1. APAGAMOS la red, las físicas y las colisiones para que nada bloquee el viaje
+       
         if (cc != null) cc.enabled = false;
         if (cnt != null) cnt.enabled = false;
         if (rb != null)
@@ -120,10 +119,10 @@ public class HudManager : NetworkBehaviour
             rb.isKinematic = true;
         }
 
-        // 2. Nos movemos a la nueva coordenada
+       
         transform.position = destino;
 
-        // 3. ESPERAMOS 1 FRAME EXACTO. Esto le da tiempo al motor gráfico de registrar que estamos en el nuevo lugar
+        
         yield return null;
 
         // 4. PRENDEMOS todo de vuelta

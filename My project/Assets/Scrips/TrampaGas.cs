@@ -17,16 +17,16 @@ public class TrampaGas : NetworkBehaviour
 
     private bool isReady = true;
 
-    // Esta función la sigue llamando tu TrapButton.cs genérico
+    
     public void RequestActivation()
     {
         if (!isReady) return;
 
         if (IsServer) StartCoroutine(SecuenciaCuboDeGas());
-        else ActivarGasRpc(); // Llamamos al nuevo RPC
+        else ActivarGasRpc();
     }
 
-    // NUEVA SINTAXIS: Reemplaza a [ServerRpc(RequireOwnership = false)]
+    
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     private void ActivarGasRpc()
     {
@@ -53,7 +53,7 @@ public class TrampaGas : NetworkBehaviour
         isReady = true;
     }
 
-    // NUEVA SINTAXIS: Reemplaza a [ClientRpc]
+  
     [Rpc(SendTo.Everyone)]
     private void EstadoPuertasRpc(bool bloqueadas)
     {
@@ -61,7 +61,7 @@ public class TrampaGas : NetworkBehaviour
         if (puertaSalida != null) puertaSalida.SetActive(bloqueadas);
     }
 
-    // NUEVA SINTAXIS: Reemplaza a [ClientRpc]
+   
     [Rpc(SendTo.Everyone)]
     private void EstadoGasRpc(bool activo)
     {

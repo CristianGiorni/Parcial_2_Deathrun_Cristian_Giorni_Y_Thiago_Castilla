@@ -19,7 +19,7 @@ public class EspectadorFantasma : NetworkBehaviour
     {
         if (!IsOwner) return;
 
-        // 1. Rotación de la cámara (Mirar alrededor)
+        
         float ratonX = Input.GetAxis("Mouse X") * sensibilidadRaton;
         float ratonY = Input.GetAxis("Mouse Y") * sensibilidadRaton;
 
@@ -32,18 +32,18 @@ public class EspectadorFantasma : NetworkBehaviour
         }
         transform.Rotate(Vector3.up * ratonX);
 
-        // 2. Vuelo libre usando la dirección de la cámara
-        float x = Input.GetAxis("Horizontal"); // A y D
-        float z = Input.GetAxis("Vertical");   // W y S
+        
+        float x = Input.GetAxis("Horizontal"); 
+        float z = Input.GetAxis("Vertical");   
         float y = 0f;
 
-        if (Input.GetKey(KeyCode.E)) y = 1f; // Subida extra recta
-        if (Input.GetKey(KeyCode.Q)) y = -1f; // Bajada extra recta
+        if (Input.GetKey(KeyCode.E)) y = 1f; 
+        if (Input.GetKey(KeyCode.Q)) y = -1f; 
 
-        // Calculamos la dirección basándonos en hacia dónde mira la CÁMARA
+        
         Vector3 direccionAdelante = miCamara.transform.forward * z;
         Vector3 direccionLado = miCamara.transform.right * x;
-        Vector3 direccionArriba = Vector3.up * y; // Para la Q y la E
+        Vector3 direccionArriba = Vector3.up * y;
 
         Vector3 movimiento = (direccionAdelante + direccionLado + direccionArriba) * velocidadVuelo * Time.deltaTime;
         transform.position += movimiento;

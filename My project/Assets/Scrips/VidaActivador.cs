@@ -20,8 +20,7 @@ public class VidaActivador : NetworkBehaviour
         estaMuerto.OnValueChanged -= AlCambiarEstadoMuerte;
     }
 
-    // El prefab universal también trae VidaActivador en los corredores.
-    // Solo el jugador que es el activador debe usar este componente.
+  
     private bool SoyElActivador()
     {
         return DeathrunManager.Instancia != null &&
@@ -59,7 +58,7 @@ public class VidaActivador : NetworkBehaviour
     {
         if (!IsServer || !SoyElActivador()) return;
 
-        // Si se cae del mapa, le hacemos daño letal para que termine la partida
+      
         if (transform.position.y < alturaMinimaMuerte && !estaMuerto.Value)
         {
             RecibirDano(1000f);
@@ -102,11 +101,11 @@ public class VidaActivador : NetworkBehaviour
 
         if (other.CompareTag("KillZone") || other.CompareTag("Trampa"))
         {
-            RecibirDano(1000f); // Unificamos la muerte con el mismo sistema de daño
+            RecibirDano(1000f); 
         }
     }
 
-    // Mantenemos esta función por si tu script ZonaDeMuerte.cs la sigue llamando
+ 
     public void ReiniciarNivelPorDerrotaActivador()
     {
         if (!IsServer) return;

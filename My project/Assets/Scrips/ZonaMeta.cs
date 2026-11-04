@@ -11,7 +11,7 @@ public class ZonaMeta : NetworkBehaviour
         {
             PlayerHealth salud = other.GetComponent<PlayerHealth>();
 
-            // CAMBIO CLAVE: Permitimos cruzar a cualquiera cuyo ID no sea el del Activador actual
+            
             if (salud != null && salud.OwnerClientId != DeathrunManager.Instancia.idDelActivadorActual.Value && !salud.llegoAMeta.Value && !salud.estaMuerto.Value)
             {
                 Debug.Log("¡Un corredor llegó a la meta!");

@@ -15,7 +15,7 @@ public class MenuRed : MonoBehaviour
     [Header("Configuración de Red")]
     public ushort puerto = 7777;
 
-    // ACTIVADOR: crea la partida como Host
+    
     public void IniciarComoActivador()
     {
         NetworkManager manager = NetworkManager.Singleton;
@@ -35,14 +35,14 @@ public class MenuRed : MonoBehaviour
             return;
         }
 
-        // Escuchar conexiones en todas las interfaces de red
+       
         transport.SetConnectionData(
             "127.0.0.1",
             puerto,
             "0.0.0.0"
         );
 
-        // Iniciar Host
+        
         bool iniciado = manager.StartHost();
 
         if (!iniciado)
@@ -53,14 +53,14 @@ public class MenuRed : MonoBehaviour
 
         Debug.Log("Host iniciado. Esperando al corredor...");
 
-        // Cargar escena para todos los jugadores
+  
         manager.SceneManager.LoadScene(
             nombreEscenaJuego,
             LoadSceneMode.Single
         );
     }
 
-    // CORREDOR: se conecta a la partida del Activador
+ 
     public void IniciarComoCorredor()
     {
         NetworkManager manager = NetworkManager.Singleton;
@@ -88,13 +88,13 @@ public class MenuRed : MonoBehaviour
 
         string ipDestino = inputIP.text.Trim();
 
-        // Configurar conexión al Host
+     
         transport.SetConnectionData(
             ipDestino,
             puerto
         );
 
-        // Conectar como cliente
+      
         bool conectado = manager.StartClient();
 
         if (!conectado)
