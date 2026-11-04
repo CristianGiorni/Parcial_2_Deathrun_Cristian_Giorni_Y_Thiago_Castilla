@@ -50,14 +50,13 @@ public class PlayerHealth : NetworkBehaviour
         }
     }
 
-    [Rpc(SendTo.Everyone)]
+    // Permiso Everyone para que el Cliente pueda volverse fantasma
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
     public void ActivarEspectadorRpc()
     {
-        // 1. Apagamos los gráficos
         Renderer[] renderers = GetComponentsInChildren<Renderer>();
         foreach (Renderer r in renderers) r.enabled = false;
 
-        // 2. Apagamos colisiones para que vuele por el mapa
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
 
@@ -72,34 +71,25 @@ public class PlayerHealth : NetworkBehaviour
             rb.isKinematic = true;
         }
 
-        // 3. Lógica local para el jugador fantasma (Teletransporte)
         if (IsOwner)
         {
-            // Búsqueda inteligente del punto de aparición
             if (puntoDeAparicion == null)
             {
                 GameObject punto = GameObject.FindWithTag("Respawn");
                 if (punto != null) puntoDeAparicion = punto.transform;
             }
 
-            // Lo movemos a las coordenadas seguras de inicio
             if (puntoDeAparicion != null)
-            {
                 transform.position = puntoDeAparicion.position;
-            }
-            else
-            {
-                Debug.LogWarning("Modo Espectador: No se encontró el Tag 'Respawn'.");
-            }
 
-            // Activamos el script de vuelo libre
             EspectadorFantasma fantasma = GetComponent<EspectadorFantasma>();
             if (fantasma != null) fantasma.enabled = true;
         }
     }
 
-    [Rpc(SendTo.Everyone)]
-    public void RestaurarJugadorRpc(Vector3 posicionArena)
+    // Permiso Everyone para que el Cliente pueda restaurar su cuerpo y agarrar armas
+    [Rpc(SendTo.Everyone, InvokePermission = RpcInvokePermission.Everyone)]
+    public void RestaurarJugadorRpc()
     {
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = true;
@@ -114,14 +104,6 @@ public class PlayerHealth : NetworkBehaviour
 
             FirstPersonRunner scriptMov = GetComponent<FirstPersonRunner>();
             if (scriptMov != null) scriptMov.enabled = true;
-
-            Rigidbody rb = GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.isKinematic = true;
-                transform.position = posicionArena;
-                rb.isKinematic = false;
-            }
         }
     }
 }

@@ -5,15 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class AsignadorDeRoles : NetworkBehaviour
 {
-    public GameObject prefabActivador;
-    public GameObject prefabCorredor;
+    [Header("Prefab Universal del Jugador")]
+    [Tooltip("Arrastrá acá el Prefab que tiene el FirstPersonRunner, HudManager, y PlayerHealth. NO uses Prefabs separados.")]
+    public GameObject prefabJugadorUniversal;
 
-    public Transform puntoInicioActivador;
-    public Transform puntoInicioCorredores;
+    // El lugar físico donde esperan mientras están en el Lobby
+    public Transform puntoEsperaLobby;
 
     private void Awake()
     {
-        // Si al recargar la escena se creó un NetworkManager duplicado, lo destruimos
         NetworkManager[] managers = FindObjectsByType<NetworkManager>(FindObjectsSortMode.None);
         foreach (NetworkManager nm in managers)
         {
@@ -28,15 +28,9 @@ public class AsignadorDeRoles : NetworkBehaviour
     {
         if (IsServer)
         {
-            // 1. Escuchamos conexiones nuevas
             NetworkManager.Singleton.OnClientConnectedCallback += CrearPersonajeParaCliente;
-
-            // 2. Escuchamos cuando TODOS terminan de cargar la escena tras un reinicio
             NetworkManager.Singleton.SceneManager.OnLoadEventCompleted += EscenaCargadaParaTodos;
 
-            // 3. SOLO creamos al Host acá si es la primera vez que abre la sala (1 solo conectado).
-            // Si es un reinicio de partida (hay más de 1 jugador), esperamos a "EscenaCargadaParaTodos"
-            // para que los clientes ya estén adentro del mapa cuando nazca el Activador.
             if (NetworkManager.Singleton.ConnectedClientsIds.Count == 1)
             {
                 CrearPersonajeParaCliente(NetworkManager.ServerClientId);
@@ -56,7 +50,6 @@ public class AsignadorDeRoles : NetworkBehaviour
         }
     }
 
-    // Se dispara automáticamente solo cuando TODOS los jugadores ya cargaron la escena
     private void EscenaCargadaParaTodos(string sceneName, LoadSceneMode loadSceneMode, List<ulong> clientsCompleted, List<ulong> clientsTimedOut)
     {
         foreach (ulong clientId in NetworkManager.Singleton.ConnectedClientsIds)
@@ -67,7 +60,6 @@ public class AsignadorDeRoles : NetworkBehaviour
 
     private void CrearPersonajeParaCliente(ulong clientId)
     {
-        // Barrera de seguridad para no duplicar si ya tiene un cuerpo activo
         if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out NetworkClient cliente))
         {
             if (cliente.PlayerObject != null && cliente.PlayerObject.IsSpawned)
@@ -76,10 +68,14 @@ public class AsignadorDeRoles : NetworkBehaviour
             }
         }
 
-        GameObject prefabElegido = (clientId == NetworkManager.ServerClientId) ? prefabActivador : prefabCorredor;
-        Transform puntoElegido = (clientId == NetworkManager.ServerClientId) ? puntoInicioActivador : puntoInicioCorredores;
+        if (prefabJugadorUniversal == null || puntoEsperaLobby == null)
+        {
+            Debug.LogError("AsignadorDeRoles: Faltan asignar el Prefab Universal o el Punto de Espera en el Inspector.");
+            return;
+        }
 
-        GameObject nuevoPersonaje = Instantiate(prefabElegido, puntoElegido.position, puntoElegido.rotation);
+        // Spawnemamos a TODOS los jugadores como cáscaras neutrales en la zona de espera
+        GameObject nuevoPersonaje = Instantiate(prefabJugadorUniversal, puntoEsperaLobby.position, puntoEsperaLobby.rotation);
         nuevoPersonaje.GetComponent<NetworkObject>().SpawnAsPlayerObject(clientId, true);
     }
 }
